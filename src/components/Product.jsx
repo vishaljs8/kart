@@ -2,6 +2,7 @@
 import { useLocation, useParams } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const Product = () => {
   const { id } = useParams();
@@ -16,7 +17,7 @@ const Product = () => {
   const handleBook = async () => {
   try {
     const res = await axios.post(
-      `http://localhost:8080/booking/borrow?productId=${id}`,
+      `${API_URL}/booking/borrow?productId=${id}`,
       {}, 
       jwt
     );
@@ -32,7 +33,7 @@ const Product = () => {
   useEffect(() => {
     if (!product) {
       axios
-        .get(`http://localhost:8080/public/product/${id}`)
+        .get(`${API_URL}/public/product/${id}`)
         .then((res) => setProduct(res.data));
     }
   }, [id, product]);

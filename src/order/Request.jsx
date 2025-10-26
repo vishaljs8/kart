@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const Request = () => {
   const [product, setProduct] = useState([]);
@@ -9,7 +10,7 @@ const Request = () => {
   };
 
   const handleproduct = async () => {
-    const res = await axios.get("http://localhost:8080/booking/myReq", jwt);
+    const res = await axios.get(`${API_URL}/booking/myReq`, jwt);
     setProduct(res.data);
     console.log(res.data);
   };
@@ -18,11 +19,11 @@ const Request = () => {
   }, []);
 
   const handleAccept = async (id,pid) => {
-    const res = await axios.post(`http://localhost:8080/booking/accept/${id}/${pid}`,{}, jwt);
+    const res = await axios.post(`${API_URL}/booking/accept/${id}/${pid}`,{}, jwt);
     console.log(res.data);
 
   };const handleReject = async (id) => {
-    const res = await axios.post(`http://localhost:8080/booking/reject/${id}`,{}, jwt);
+    const res = await axios.post(`${API_URL}/booking/reject/${id}`,{}, jwt);
     console.log(res.data);
   };
   return (

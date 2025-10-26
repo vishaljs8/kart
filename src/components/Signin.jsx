@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState } from "react";
+const API_URL = import.meta.env.VITE_API_URL;
 
 function Signin() {
   const [username, setUsername] = useState("");
@@ -23,7 +24,7 @@ function Signin() {
     }
 
     try {
-      const res = await axios.post("http://localhost:8080/user/create-us", {
+      const res = await axios.post(`${API_URL}/auth/create-us`, {
         username,
         password,
       });

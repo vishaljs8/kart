@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+const API_URL = import.meta.env.VITE_API_URL;
+
 const Myorder = () => {
   const [order, setOrder] = useState([]);
   const token = localStorage.getItem("token");
@@ -9,7 +11,7 @@ const Myorder = () => {
 
   const handleorder = async () => {
     const res = await axios.get(
-      "http://localhost:8080/booking/my-bookings",
+      `${API_URL}/booking/my-bookings`,
       jwt
     );
     setOrder(res.data);
@@ -20,7 +22,7 @@ const Myorder = () => {
   }, []);
 
   const handleReturn =async(id)=>{
-    const res = await axios.post(`http://localhost:8080/booking/return/${id}`,{}, jwt);
+    const res = await axios.post(`${API_URL}/booking/return/${id}`,{}, jwt);
     console.log(res.data);
   };
 

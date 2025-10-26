@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+const API_URL = import.meta.env.VITE_API_URL;
 
 function Public() {
   const navigate = useNavigate();
@@ -9,9 +10,10 @@ function Public() {
 
   useEffect(() => {
     const handleProduct = async () => {
-      const res = await axios.get("http://localhost:8080/public/product");
-      setProduct(res.data);
+      const res = await axios.get(`${API_URL}/public/product`);
       console.log(res.data);
+      setProduct(res.data);
+      
     };
     handleProduct();
   }, []);

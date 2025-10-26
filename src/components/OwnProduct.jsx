@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+const API_URL = import.meta.env.VITE_API_URL;
 
 function OwnProduct() {
   const [products, setProducts] = useState([]);
@@ -13,7 +14,7 @@ function OwnProduct() {
   const handleProduct = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:8080/user/own-product",
+        `${API_URL}/user/own-product`,
         jwt
       );
       setProducts(res.data);
@@ -57,7 +58,7 @@ function ProductForm({ onClose, jwt }) {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "http://localhost:8080/user/create-prd",
+        `${API_URL}/user/create-prd`,
         {
           productName,
           description,

@@ -33,7 +33,7 @@ const Myorder = () => {
         {order.map((item) => (
           <li key={item.id}>
             <button onClick={()=>handleReturn(item.id)}>return</button>
-            {item.ownerName}
+            {item.productName}
             {item.type}
           </li>
         ))}

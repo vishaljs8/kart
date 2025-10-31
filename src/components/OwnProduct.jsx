@@ -50,7 +50,7 @@ function OwnProduct() {
   );
 }
 
-function ProductForm({ onClose, jwt }) {
+function ProductForm({ onClose, jwt, refreshProducts }) {
   const [productName, setProductName] = useState("");
   const [description, setDescription] = useState("");
 
@@ -59,16 +59,13 @@ function ProductForm({ onClose, jwt }) {
     try {
       const res = await axios.post(
         `${API_URL}/user/create-prd`,
-        {
-          productName,
-          description,
-        },
+        { productName, description },
         jwt
       );
-      console.log("product created:", res.data);
-      refreshProducts();
+      console.log("Product created:", res.data);
+      refreshProducts(); 
     } catch (err) {
-      console.error("failed:", err.response?.data || err.message);
+      console.error("Failed:", err.response?.data || err.message);
     }
 
     onClose();
@@ -83,21 +80,17 @@ function ProductForm({ onClose, jwt }) {
           <input
             type="text"
             name="productname"
-            placeholder="ProductName"
+            placeholder="Product Name"
             value={productName}
-            onChange={(e) => {
-              setProductName(e.target.value);
-            }}
+            onChange={(e) => setProductName(e.target.value)}
             required
           />
           <input
             type="text"
             name="description"
-            placeholder="description"
+            placeholder="Description"
             value={description}
-            onChange={(e) => {
-              setDescription(e.target.value);
-            }}
+            onChange={(e) => setDescription(e.target.value)}
             required
           />
           <div>

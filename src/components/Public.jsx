@@ -1,16 +1,32 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 function Public() {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const [product, setProduct] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState(localStorage.getItem("token"));
 
+  // ✅ Capture token from Google OAuth redirect
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const urlToken = params.get("token");
+    if (urlToken) {
+      localStorage.setItem("token", urlToken);
+      setToken(urlToken);
+
+      // remove ?token= from URL
+      window.history.replaceState({}, document.title, "/Public");
+    }
+  }, [location]);
+
+  // ✅ Fetch products
   useEffect(() => {
     const handleProduct = async () => {
       try {
@@ -38,13 +54,8 @@ function Public() {
     navigate("/Login");
   };
 
-  if (loading) {
-    return <h2>Loading products...</h2>;
-  }
-
-  if (error) {
-    return <h2 style={{ color: "red" }}>Error: {error}</h2>;
-  }
+  if (loading) return <h2>Loading products...</h2>;
+  if (error) return <h2 style={{ color: "red" }}>Error: {error}</h2>;
 
   return (
     <div>

@@ -9,7 +9,6 @@ function Login() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  // 🔹 Local Sign In (username + password)
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -23,10 +22,10 @@ function Login() {
       navigate("/Public");
     } catch (error) {
       console.error("Login failed:", error.response?.data || error.message);
+      alert("Invalid username or password!");
     }
   };
 
-  // 🔹 Google Sign-In Redirect
   const handleGoogleLogin = () => {
     const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
     const redirectUri = `${API_URL}/auth/google/callback`;
@@ -35,65 +34,84 @@ function Login() {
 
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}`;
 
-    // Redirect user to Google OAuth2 login
     window.location.href = authUrl;
   };
 
-  // 🔹 Navigate to Sign Up Page
   const signin = () => {
     navigate("/Signin");
   };
 
   return (
-    <>
-      <div style={{ marginLeft: 650, marginTop: 300 }}>
-        <h2>Login</h2>
-      </div>
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-blue-50 to-indigo-100">
+      <div className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-md">
+        <h2 className="text-3xl font-semibold text-center text-indigo-600 mb-6">
+          Welcome Back 👋
+        </h2>
 
-      <div style={{ marginLeft: 620, marginTop: 20 }}>
-        <form onSubmit={handleLogin}>
-          <input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <br />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <br />
-          <button type="submit">Login</button>
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div>
+            <input
+              type="text"
+              placeholder="Username"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
+
+          <div>
+            <input
+              type="password"
+              placeholder="Password"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition"
+          >
+            Login
+          </button>
         </form>
 
-        <p>
-          Don't have an account?
-          <button type="button" onClick={signin}>
+        <div className="text-center mt-4 text-sm text-gray-600">
+          Don't have an account?{" "}
+          <button
+            type="button"
+            onClick={signin}
+            className="text-indigo-600 font-medium hover:underline"
+          >
             Sign Up
           </button>
-        </p>
+        </div>
 
-        <hr style={{ width: "200px", marginLeft: "50px" }} />
+        <div className="flex items-center my-6">
+          <div className="flex-grow border-t border-gray-300"></div>
+          <span className="mx-2 text-gray-500">or</span>
+          <div className="flex-grow border-t border-gray-300"></div>
+        </div>
+
         <button
           type="button"
           onClick={handleGoogleLogin}
-          style={{
-            backgroundColor: "#4285F4",
-            color: "white",
-            border: "none",
-            padding: "8px 16px",
-            borderRadius: "4px",
-            cursor: "pointer",
-          }}
+          className="w-full flex items-center justify-center gap-2 bg-[#4285F4] text-white py-2 rounded-lg hover:bg-[#357ae8] transition"
         >
+          <img
+            src="https://www.svgrepo.com/show/355037/google.svg"
+            alt="Google"
+            className="w-5 h-5"
+          />
           Login with Google
         </button>
       </div>
-    </>
+    </div>
   );
 }
 
 export default Login;
+

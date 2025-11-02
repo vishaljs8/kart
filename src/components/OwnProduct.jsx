@@ -96,10 +96,10 @@ function ProductForm({ onClose, jwt, refreshProducts }) {
 
   return (
     <>
-      {/* Overlay */}
+      
       <div className="fixed inset-0 bg-black bg-opacity-40 z-10"></div>
 
-      {/* Modal */}
+      
       <div className="fixed inset-0 flex justify-center items-center z-20">
         <div className="bg-white p-8 rounded-xl shadow-lg w-96">
           <h3 className="text-2xl font-bold text-indigo-700 mb-5 text-center">

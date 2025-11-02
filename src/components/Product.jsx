@@ -5,34 +5,49 @@ import { useEffect, useState } from "react";
 const API_URL = import.meta.env.VITE_API_URL;
 
 const Product = () => {
-  const { id } = useParams();
+  const { id, username } = useParams();
   const location = useLocation();
   const [product, setProduct] = useState(location.state?.product || null);
+  const [user, setUser] = useState(null);
   const token = localStorage.getItem("token");
-  const jwt = {
-    headers: { Authorization: `Bearer ${token}` },
-  };
+
+
+  useEffect(() => {
+    if (!token) return;
+    axios
+      .get(`${API_URL}/user/get-user`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => setUser(res.data))
+      .catch((err) => console.error("Failed to fetch user:", err));
+  }, [token]);
+
+  
+  useEffect(() => {
+    if (!product) {
+      axios
+        .get(`${API_URL}/public/product/${id}`)
+        .then((res) => setProduct(res.data))
+        .catch((err) => console.error("Failed to fetch product:", err));
+    }
+  }, [id, product]);
 
   const handleBook = async () => {
     try {
       const res = await axios.post(
         `${API_URL}/booking/borrow?productId=${id}`,
         {},
-        jwt
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
-      console.log(res.data);
       alert("✅ Product booked successfully!");
+      console.log(res.data);
     } catch (err) {
       console.error(err.response?.data || err.message);
       alert("❌ Failed to book product. Please try again.");
     }
   };
-
-  useEffect(() => {
-    if (!product) {
-      axios.get(`${API_URL}/public/product/${id}`).then((res) => setProduct(res.data));
-    }
-  }, [id, product]);
 
   if (!product) {
     return (
@@ -57,12 +72,15 @@ const Product = () => {
             </h1>
             <p className="text-gray-700 mb-4">{product.description}</p>
 
-            <button
-              onClick={handleBook}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-medium shadow-md transition duration-300"
-            >
-              Book Now
-            </button>
+            
+            {user && user.username !== username && (
+              <button
+                onClick={handleBook}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-medium shadow-md transition duration-300"
+              >
+                Book Now
+              </button>
+            )}
           </div>
         </div>
       </div>

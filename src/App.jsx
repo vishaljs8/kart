@@ -8,6 +8,7 @@ import Myorder from "./order/Myorder";
 import Request from "./order/Request";
 import Product from "./components/Product";
 import OwnProduct from "./components/OwnProduct";
+import Profile from "./components/Profile";
 
 function App() {
   return (
@@ -19,8 +20,9 @@ function App() {
         <Route path="/Public" element={<Public />}/>
         <Route path="/Myorder" element={<Myorder />}/>
         <Route path="/Request" element={<Request />}/>
-        <Route path="/Product/:id" element={<Product />}/>
+        <Route path="/Product/:id/:username" element={<Product />}/>
         <Route path="/OwnProduct" element={<OwnProduct />}/>
+        <Route path="/Profile" element={<Profile />}/>
       </Routes>
     </Router>
   );

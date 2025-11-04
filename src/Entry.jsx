@@ -38,7 +38,7 @@ export default function Entry() {
         onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
         onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
       >
-        <h1 style={styles.heading}>Welcome to Kart 🛒</h1>
+        <h1 style={styles.heading}>CampusKart 🛒</h1>
       </div>
     </div>
   );

@@ -41,7 +41,7 @@ const Product = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      alert("✅ Product booked successfully!");
+      alert(res.data.message );
       console.log(res.data);
     } catch (err) {
       console.error(err.response?.data || err.message);

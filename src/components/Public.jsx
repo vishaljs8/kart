@@ -177,7 +177,7 @@ function Public() {
       <footer className="bg-white text-center py-4 shadow-inner">
         <p className="text-gray-600 text-sm">
           © {new Date().getFullYear()}{" "}
-          <span className="text-blue-600 font-semibold">@vishalProductin</span>
+          <span className="text-blue-600 font-semibold">@vishalProduction</span>
         </p>
       </footer>
     </div>

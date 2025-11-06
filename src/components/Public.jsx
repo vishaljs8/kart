@@ -55,7 +55,9 @@ function Public() {
   }, []);
 
   const handleItemClick = (product) => {
-    navigate(`/Product/${product.id}/${product.ownerEmail}`, { state: { product } });
+    navigate(`/Product/${product.id}/${product.ownerEmail}`, {
+      state: { product },
+    });
   };
 
   const handleLogin = () => navigate("/Login");
@@ -75,11 +77,9 @@ function Public() {
     );
 
   return (
-    <div className="min-h-screen bg-gray-50">
-     
+    <div className="flex flex-col min-h-screen bg-gray-50">
       <nav className="bg-white shadow-md py-4 px-8 flex justify-between items-center sticky top-0 z-10">
-        
-        <div className="flex items-center gap-3 cursor-pointer" >
+        <div className="flex items-center gap-3 cursor-pointer">
           {token && user ? (
             <div
               onClick={() => navigate("/Profile")}
@@ -91,14 +91,11 @@ function Public() {
           ) : (
             <></>
           )}
-          <h1
-            className="text-2xl font-bold text-blue-600 hover:text-blue-700"
-          >
+          <h1 className="text-2xl font-bold text-blue-600 hover:text-blue-700">
             CampusKart 🛒
           </h1>
         </div>
 
-        
         <div className="flex items-center gap-3">
           {token ? (
             <>
@@ -132,8 +129,7 @@ function Public() {
         </div>
       </nav>
 
-      
-      <section className="px-6 py-10">
+      <section className="flex-grow px-6 py-10">
         {products.length > 0 ? (
           <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 justify-center">
             {products.map((item) => (
@@ -142,7 +138,6 @@ function Public() {
                 onClick={() => handleItemClick(item)}
                 className="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-2xl transition-transform transform hover:-translate-y-1 cursor-pointer"
               >
-               
                 <div className="bg-gray-100 h-40 flex items-center justify-center">
                   {item.image ? (
                     <img
@@ -179,6 +174,12 @@ function Public() {
           </h3>
         )}
       </section>
+      <footer className="bg-white text-center py-4 shadow-inner">
+        <p className="text-gray-600 text-sm">
+          © {new Date().getFullYear()}{" "}
+          <span className="text-blue-600 font-semibold">@vishalProductin</span>
+        </p>
+      </footer>
     </div>
   );
 }

@@ -4,7 +4,7 @@ import { useState } from "react";
 const API_URL = import.meta.env.VITE_API_URL;
 
 function Signin() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(""); 
   const navigate = useNavigate();
@@ -18,14 +18,14 @@ function Signin() {
     setError(""); 
 
     
-    if (!username || !password) {
+    if (!email || !password) {
       setError("Username and password are required");
       return;
     }
 
     try {
       const res = await axios.post(`${API_URL}/auth/create-us`, {
-        username,
+        email,
         password,
       });
       console.log("Signup successful:", res.data);
@@ -45,8 +45,8 @@ function Signin() {
           <input
             type="text"
             placeholder="Username"
-            value={username || ""}
-            onChange={(e) => setUsername(e.target.value)}
+            value={email || ""}
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-green-400 outline-none"
           />
           <input

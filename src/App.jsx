@@ -20,7 +20,7 @@ function App() {
         <Route path="/Public" element={<Public />}/>
         <Route path="/Myorder" element={<Myorder />}/>
         <Route path="/Request" element={<Request />}/>
-        <Route path="/Product/:id/:username" element={<Product />}/>
+        <Route path="/Product/:id/:ownerEmail" element={<Product />}/>
         <Route path="/OwnProduct" element={<OwnProduct />}/>
         <Route path="/Profile" element={<Profile />}/>
       </Routes>

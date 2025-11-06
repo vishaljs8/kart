@@ -5,7 +5,7 @@ import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 
 function Login() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
@@ -13,7 +13,7 @@ function Login() {
     e.preventDefault();
     try {
       const res = await axios.post(`${API_URL}/auth/login`, {
-        username,
+        email,
         password,
       });
       console.log("Login successful:", res.data);
@@ -54,8 +54,8 @@ function Login() {
               type="text"
               placeholder="Username"
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>

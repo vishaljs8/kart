@@ -55,7 +55,7 @@ function Public() {
   }, []);
 
   const handleItemClick = (product) => {
-    navigate(`/Product/${product.id}/${product.ownerName}`, { state: { product } });
+    navigate(`/Product/${product.id}/${product.ownerEmail}`, { state: { product } });
   };
 
   const handleLogin = () => navigate("/Login");
@@ -84,9 +84,9 @@ function Public() {
             <div
               onClick={() => navigate("/Profile")}
               className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold text-lg"
-              title={user.fullname || user.username}
+              title={user.fullname || user.email}
             >
-              {(user.fullname || user.username)?.charAt(0).toUpperCase()}
+              {(user.fullname || user.email)?.charAt(0).toUpperCase()}
             </div>
           ) : (
             <></>
@@ -134,10 +134,6 @@ function Public() {
 
       
       <section className="px-6 py-10">
-        <h2 className="text-center text-3xl font-bold mb-10 text-gray-800">
-          Explore Available Products
-        </h2>
-
         {products.length > 0 ? (
           <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 justify-center">
             {products.map((item) => (

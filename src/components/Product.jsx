@@ -5,12 +5,12 @@ import { useEffect, useState } from "react";
 const API_URL = import.meta.env.VITE_API_URL;
 
 const Product = () => {
-  const { id, username } = useParams();
+  const { id, ownerEmail } = useParams();
   const location = useLocation();
   const [product, setProduct] = useState(location.state?.product || null);
   const [user, setUser] = useState(null);
   const token = localStorage.getItem("token");
-
+  const [status, setStatus] = useState("Book");
 
   useEffect(() => {
     if (!token) return;
@@ -22,7 +22,6 @@ const Product = () => {
       .catch((err) => console.error("Failed to fetch user:", err));
   }, [token]);
 
-  
   useEffect(() => {
     if (!product) {
       axios
@@ -41,13 +40,43 @@ const Product = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      alert(res.data.message );
-      console.log(res.data);
+      setStatus(res.data.status);
+      alert(res.data.message);
     } catch (err) {
       console.error(err.response?.data || err.message);
-      alert("❌ Failed to book product. Please try again.");
+      alert("Failed to book product. Please try again.");
     }
   };
+useEffect(() => {
+  const fetchStatus = async () => {
+    try {
+      const res = await axios.get(`${API_URL}/booking/my-bookings`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      
+      const userBooking = res.data.find(
+        (b) => String(b.productId) === String(id) && b.status !== "RETURNED"
+      );
+     
+      if (userBooking) {
+        if (userBooking.status === "REQUESTED") setStatus("REQUESTED");
+        else if (userBooking.status === "ACTIVE") setStatus("BOOKED");
+        else if (userBooking.status === "RETURNED") setStatus("BOOK");
+        else setStatus("BOOKED");
+      } else {
+        setStatus("BOOK");
+      }
+    } catch (error) {
+      console.error("Error fetching booking status:", error);
+      setStatus("Book");
+    }
+  };
+
+  if (token) fetchStatus();
+}, [id, handleBook]);
+
+
 
   if (!product) {
     return (
@@ -72,13 +101,12 @@ const Product = () => {
             </h1>
             <p className="text-gray-700 mb-4">{product.description}</p>
 
-            
-            {user && user.username !== username && (
+            {user && user.email !== ownerEmail && (
               <button
                 onClick={handleBook}
                 className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-medium shadow-md transition duration-300"
               >
-                Book Now
+                {status}
               </button>
             )}
           </div>

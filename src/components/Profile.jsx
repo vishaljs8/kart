@@ -19,6 +19,7 @@ const Profile = () => {
       try {
         const res = await axios.get(`${API_URL}/user/get-user`, jwt);
         setUserData(res.data);
+        console.log(res.data);
       } catch (error) {
         setError(error.response?.data?.message || error.message);
       }

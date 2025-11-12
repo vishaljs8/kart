@@ -25,16 +25,32 @@ function OwnProduct() {
     handleProduct();
   }, [token]);
 
+  const onDelete = async (productId) => {
+    try {
+      const res = await axios.delete(
+        `${API_URL}/user/delete-prd/${productId}`,
+        jwt
+      );
+      alert(res.data.message || "Product deleted successfully!");
+      handleProduct();
+    } catch (err) {
+      console.error("Error deleting product:", err);
+      alert("Failed to delete product.");
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 p-8">
-      <div className="max-w-5xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-3xl font-bold text-indigo-700">Your Products</h2>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-blue-100 to-purple-100 p-10">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex justify-between items-center mb-10">
+          <h2 className="text-4xl font-extrabold text-indigo-700 tracking-tight">
+            Your Products
+          </h2>
           <button
             onClick={() => setShowForm(true)}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium shadow-md transition duration-300"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg font-semibold shadow-md transition-all duration-300 transform hover:scale-105"
           >
-            + Create Product
+            + Add Product
           </button>
         </div>
 
@@ -47,25 +63,38 @@ function OwnProduct() {
         )}
 
         {products.length > 0 ? (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {products.map((p) => (
               <div
                 key={p.id}
-                className="bg-white p-5 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-200"
+                className="relative bg-white p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-2xl hover:-translate-y-1 transform transition-all duration-300"
               >
-                <h3 className="text-xl font-semibold text-indigo-600 mb-2">
+                <div className="absolute top-3 right-3 text-xs bg-indigo-100 text-indigo-600 px-3 py-1 rounded-full">
+                  {p.status || "....."}
+                </div>
+                <h3 className="text-xl font-bold text-indigo-700 mb-2">
                   {p.productName}
                 </h3>
-                <p className="text-gray-700 mb-2">{p.description}</p>
-                <p className="text-sm text-gray-500 italic">
-                  Status: {p.status || "Available"}
+                <p className="text-gray-600 mb-3 line-clamp-2">{p.description}</p>
+                <p className="text-sm text-gray-500 mb-4">
+                  Quantity:{" "}
+                  <span className="font-semibold text-gray-700">
+                    {p.quantity}
+                  </span>
                 </p>
+                <button
+                  type="button"
+                  onClick={() => onDelete(p.id)}
+                  className="w-full bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white px-4 py-2 rounded-lg font-medium shadow-md transition-all duration-300"
+                >
+                  Delete
+                </button>
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-center text-gray-600 mt-10 text-lg">
-            You haven't added any products yet.
+          <p className="text-center text-gray-600 mt-16 text-lg italic">
+            You haven’t added any products yet. Start by creating one above 🚀
           </p>
         )}
       </div>
@@ -76,13 +105,14 @@ function OwnProduct() {
 function ProductForm({ onClose, jwt, refreshProducts }) {
   const [productName, setProductName] = useState("");
   const [description, setDescription] = useState("");
+  const [quantity, setQuantity] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await axios.post(
         `${API_URL}/user/create-prd`,
-        { productName, description },
+        { productName, description, quantity },
         jwt
       );
       console.log("Product created:", res.data);
@@ -96,16 +126,14 @@ function ProductForm({ onClose, jwt, refreshProducts }) {
 
   return (
     <>
-      
-      <div className="fixed inset-0 bg-black bg-opacity-40 z-10"></div>
+      <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-10"></div>
 
-      
-      <div className="fixed inset-0 flex justify-center items-center z-20">
-        <div className="bg-white p-8 rounded-xl shadow-lg w-96">
-          <h3 className="text-2xl font-bold text-indigo-700 mb-5 text-center">
+      <div className="fixed inset-0 flex justify-center items-center z-20 animate-fadeIn">
+        <div className="bg-white p-8 rounded-2xl shadow-2xl w-96 border-t-4 border-indigo-600 transform scale-100 hover:scale-[1.01] transition-transform duration-300">
+          <h3 className="text-3xl font-extrabold text-indigo-700 mb-6 text-center">
             Create Product
           </h3>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <input
               type="text"
               placeholder="Product Name"
@@ -114,25 +142,38 @@ function ProductForm({ onClose, jwt, refreshProducts }) {
               required
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
+            <input
+              type="number"
+              placeholder="Product Quantity"
+              min="1"
+              step="1"
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
+              required
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              onInput={(e) => {
+                if (e.target.value < 1) e.target.value = 1;
+              }}
+            />
             <textarea
               placeholder="Description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               required
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 h-24 resize-none"
             ></textarea>
 
             <div className="flex justify-between mt-6">
               <button
                 type="submit"
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium shadow"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg font-semibold shadow-md transition-all duration-300"
               >
                 Submit
               </button>
               <button
                 type="button"
                 onClick={onClose}
-                className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg font-medium shadow"
+                className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-5 py-2.5 rounded-lg font-semibold shadow-md transition-all duration-300"
               >
                 Cancel
               </button>

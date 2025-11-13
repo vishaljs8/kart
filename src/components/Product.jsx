@@ -10,7 +10,8 @@ const Product = () => {
   const [product, setProduct] = useState(location.state?.product || null);
   const [user, setUser] = useState(null);
   const token = localStorage.getItem("token");
-  const [status, setStatus] = useState("Book");
+  const [status, setStatus] = useState("BOOK");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!token) return;
@@ -32,85 +33,136 @@ const Product = () => {
   }, [id, product]);
 
   const handleBook = async () => {
+    setLoading(true);
     try {
       const res = await axios.post(
         `${API_URL}/booking/borrow?productId=${id}`,
         {},
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-      setStatus(res.data.status);
       alert(res.data.message);
+      setStatus("REQUESTED");
     } catch (err) {
       console.error(err.response?.data || err.message);
       alert("Failed to book product. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
-useEffect(() => {
-  const fetchStatus = async () => {
-    try {
-      const res = await axios.get(`${API_URL}/booking/my-bookings`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
 
-      
-      const userBooking = res.data.find(
-        (b) => String(b.productId) === String(id) && b.status !== "RETURNED"
-      );
-     
-      if (userBooking) {
-        if (userBooking.status === "REQUESTED") setStatus("REQUESTED");
-        else if (userBooking.status === "ACTIVE") setStatus("BOOKED");
-        else if (userBooking.status === "RETURNED") setStatus("BOOK");
-        else setStatus("BOOKED");
-      } else {
+  useEffect(() => {
+    const fetchStatus = async () => {
+      try {
+        const res = await axios.get(`${API_URL}/booking/my-bookings`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const userBooking = res.data.find(
+          (b) =>
+            String(b.productId) === String(id) &&
+            b.status !== "RETURNED" &&
+            b.status !== "CANCELLED"
+        );
+
+        if (userBooking) {
+          switch (userBooking.status) {
+            case "REQUESTED":
+              setStatus("REQUESTED");
+              break;
+            case "ACTIVE":
+              setStatus("BOOKED");
+              break;
+            default:
+              setStatus("BOOK");
+          }
+        } else {
+          setStatus("BOOK");
+        }
+      } catch (error) {
+        console.error("Error fetching booking status:", error);
         setStatus("BOOK");
       }
-    } catch (error) {
-      console.error("Error fetching booking status:", error);
-      setStatus("Book");
-    }
-  };
+    };
 
-  if (token) fetchStatus();
-}, [id, handleBook]);
+    if (token) fetchStatus();
+  }, [id, token]);
 
-
-
-  if (!product) {
-    return (
-      <div className="flex justify-center items-center h-screen text-lg font-semibold text-gray-600">
-        Loading...
-      </div>
-    );
-  }
+  if (!product)
+    return <div className="text-center mt-20 text-gray-600 text-lg">Loading...</div>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex items-center justify-center px-4 py-10">
-      <div className="bg-white shadow-xl rounded-2xl p-8 max-w-2xl w-full">
-        <div className="flex flex-col md:flex-row items-center gap-6">
-          <img
-            src={product.image}
-            alt={product.productName}
-            className="w-64 h-64 object-contain rounded-xl border border-gray-200 shadow-sm"
-          />
-          <div className="text-center md:text-left">
-            <h1 className="text-3xl font-semibold text-indigo-600 mb-3">
-              {product.productName}
-            </h1>
-            <p className="text-gray-700 mb-4">{product.description}</p>
-
-            {user && user.email !== ownerEmail && (
-              <button
-                onClick={handleBook}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-medium shadow-md transition duration-300"
-              >
-                {status}
-              </button>
-            )}
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-blue-100 to-purple-100 p-10 flex justify-center items-center">
+      <div className="bg-white p-10 rounded-3xl shadow-2xl max-w-2xl w-full border border-gray-100 transform hover:scale-[1.02] transition-all duration-300">
+        <div className="text-center mb-8">
+          <div className="w-28 h-28 mx-auto mb-6 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-md">
+            <span className="text-5xl text-white">🎁</span>
           </div>
+          <h1 className="text-4xl font-extrabold text-indigo-700 mb-2">
+            {product.productName}
+          </h1>
+          <p className="text-gray-600 text-lg italic">{product.description}</p>
         </div>
+
+        <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-6 mb-8 space-y-3 shadow-inner border border-gray-200">
+          <p>
+            👤 <span className="font-semibold text-indigo-700">Owner:</span>{" "}
+            {ownerEmail}
+          </p>
+          <p>
+            📦 <span className="font-semibold text-indigo-700">Quantity:</span>{" "}
+            {product.quantity}
+          </p>
+          <p>
+            🔖 <span className="font-semibold text-indigo-700">Status:</span>{" "}
+            {product.status}
+          </p>
+        </div>
+
+        {user && user.email !== ownerEmail && (
+          <button
+            onClick={handleBook}
+            disabled={status !== "BOOK" || loading}
+            className={`w-full py-3 rounded-xl font-semibold text-lg shadow-md transition-all duration-300 ${
+              status === "BOOK"
+                ? "bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-pink-600 hover:to-yellow-400 text-white hover:shadow-lg hover:scale-[1.02]"
+                : "bg-gray-400 cursor-not-allowed text-white"
+            }`}
+          >
+            {loading ? (
+              <span className="flex items-center justify-center gap-2">
+                <svg
+                  className="animate-spin h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+                Booking...
+              </span>
+            ) : (
+              status
+            )}
+          </button>
+        )}
+
+        {user && user.email === ownerEmail && (
+          <p className="mt-6 text-center text-sm text-gray-600">
+            🌟 You are the owner of this product.
+          </p>
+        )}
       </div>
     </div>
   );

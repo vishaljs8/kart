@@ -105,15 +105,15 @@ const Product = () => {
 
         <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-6 mb-8 space-y-3 shadow-inner border border-gray-200">
           <p>
-            👤 <span className="font-semibold text-indigo-700">Owner:</span>{" "}
+           -<span className="font-semibold text-indigo-700">Owner:</span>{" "}
             {ownerEmail}
           </p>
           <p>
-             <span className="font-semibold text-indigo-700">Quantity:</span>{" "}
+             -<span className="font-semibold text-indigo-700">Quantity:</span>{" "}
             {product.quantity}
           </p>
           <p>
-             <span className="font-semibold text-indigo-700">Status:</span>{" "}
+             -<span className="font-semibold text-indigo-700">Status:</span>{" "}
             {product.status}
           </p>
         </div>

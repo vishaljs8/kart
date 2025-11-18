@@ -95,7 +95,7 @@ const Product = () => {
       <div className="bg-white p-10 rounded-3xl shadow-2xl max-w-2xl w-full border border-gray-100 transform hover:scale-[1.02] transition-all duration-300">
         <div className="text-center mb-8">
           <div className="w-28 h-28 mx-auto mb-6 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-md">
-            <span className="text-5xl text-white">🎁</span>
+            <span className="text-5xl text-white">📦</span>
           </div>
           <h1 className="text-4xl font-extrabold text-indigo-700 mb-2">
             {product.productName}
@@ -109,11 +109,11 @@ const Product = () => {
             {ownerEmail}
           </p>
           <p>
-            📦 <span className="font-semibold text-indigo-700">Quantity:</span>{" "}
+             <span className="font-semibold text-indigo-700">Quantity:</span>{" "}
             {product.quantity}
           </p>
           <p>
-            🔖 <span className="font-semibold text-indigo-700">Status:</span>{" "}
+             <span className="font-semibold text-indigo-700">Status:</span>{" "}
             {product.status}
           </p>
         </div>
@@ -160,7 +160,7 @@ const Product = () => {
 
         {user && user.email === ownerEmail && (
           <p className="mt-6 text-center text-sm text-gray-600">
-            🌟 You are the owner of this product.
+            You are the owner of this product.
           </p>
         )}
       </div>
